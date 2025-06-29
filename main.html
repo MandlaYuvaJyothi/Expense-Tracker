@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Expense Tracker</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #f9f9f9;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px;
+    }
+
+    h1 {
+      margin-bottom: 20px;
+    }
+
+    .summary {
+      display: flex;
+      justify-content: space-around;
+      width: 100%;
+      max-width: 600px;
+      margin-bottom: 30px;
+    }
+
+    .summary div {
+      background: #e3f2fd;
+      border-radius: 10px;
+      padding: 15px;
+      width: 30%;
+      text-align: center;
+    }
+
+    .tracker-form {
+      width: 100%;
+      max-width: 600px;
+      background: #fff;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      margin-bottom: 30px;
+    }
+
+    .tracker-form input, .tracker-form select {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+
+    .tracker-form button {
+      width: 100%;
+      padding: 10px;
+      background: #4caf50;
+      color: white;
+      font-weight: bold;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+      width: 100%;
+      max-width: 600px;
+    }
+
+    ul li {
+      background: #fff;
+      padding: 10px;
+      margin: 10px 0;
+      border-left: 5px solid;
+      border-radius: 8px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    li.income { border-color: green; }
+    li.expense { border-color: red; }
+  </style>
+</head>
+<body>
+  <h1>Expense Tracker</h1>
+  <div class="summary">
+    <div>
+      <h3>Income</h3>
+      <p id="income">₹0</p>
+    </div>
+    <div>
+      <h3>Expenses</h3>
+      <p id="expenses">₹0</p>
+    </div>
+    <div>
+      <h3>Savings</h3>
+      <p id="savings">₹0</p>
+    </div>
+  </div>
+
+  <div class="tracker-form">
+    <input type="text" id="desc" placeholder="Description">
+    <input type="number" id="amount" placeholder="Amount">
+    <select id="type">
+      <option value="income">Income</option>
+      <option value="expense">Expense</option>
+    </select>
+    <button onclick="addTransaction()">Add</button>
+  </div>
+
+  <ul id="list"></ul>
+
+  <script>
+    let incomeTotal = 0;
+    let expenseTotal = 0;
+
+    function addTransaction() {
+      const desc = document.getElementById("desc").value;
+      const amount = parseFloat(document.getElementById("amount").value);
+      const type = document.getElementById("type").value;
+      const list = document.getElementById("list");
+
+      if (!desc || isNaN(amount)) {
+        alert("Please enter valid description and amount.");
+        return;
+      }
+
+      const li = document.createElement("li");
+      li.classList.add(type);
+      li.innerHTML = `${desc} <strong>₹${amount}</strong>`;
+
+      list.appendChild(li);
+
+      if (type === "income") {
+        incomeTotal += amount;
+      } else {
+        expenseTotal += amount;
+      }
+
+      document.getElementById("income").innerText = `₹${incomeTotal}`;
+      document.getElementById("expenses").innerText = `₹${expenseTotal}`;
+      document.getElementById("savings").innerText = `₹${incomeTotal - expenseTotal}`;
+
+      document.getElementById("desc").value = "";
+      document.getElementById("amount").value = "";
+      document.getElementById("type").value = "income";
+    }
+  </script>
+</body>
+</html>

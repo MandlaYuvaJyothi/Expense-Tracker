@@ -1,0 +1,94 @@
+<!-- File: login.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login - Expense Tracker</title>
+  <style>
+    body {
+      background-color: #e0f2f1;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .login-container {
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 128, 0, 0.2);
+      max-width: 400px;
+      width: 100%;
+    }
+
+    .login-container h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #2e7d32;
+    }
+
+    .login-container input {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+
+    .login-container button {
+      width: 48%;
+      padding: 10px;
+      margin: 5px 1%;
+      background: #43a047;
+      color: white;
+      font-weight: bold;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .login-container button:hover {
+      background: #2e7d32;
+    }
+
+    .button-group {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="login-container">
+    <h2>Login</h2>
+    <input type="text" id="username" placeholder="Username" required />
+    <input type="password" id="password" placeholder="Password" required />
+    <div class="button-group">
+      <button onclick="login()">Sign In</button>
+      <button onclick="signup()">Sign Up</button>
+    </div>
+  </div>
+
+  <script>
+    function login() {
+      const username = document.getElementById("username").value;
+      const password = document.getElementById("password").value;
+
+      if (username === "user" && password === "pass") {
+        window.location.href = "expense-tracker.html";
+      } else {
+        alert("Invalid credentials. Try 'user' and 'pass'.");
+      }
+    }
+
+    function signup() {
+      alert("Redirecting to registration page (not implemented yet).");
+      // window.location.href = "signup.html"; // Uncomment when signup page is ready
+    }
+  </script>
+</body>
+</html>
