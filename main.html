@@ -1,14 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Expense Tracker</title>
   <style>
     body {
       margin: 0;
       font-family: Arial, sans-serif;
-      background-color: #f9f9f9;
+      background-color: #e0f7fa;
+      background-image: 
+        linear-gradient(to right, rgba(0, 123, 255, 0.2) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(0, 123, 255, 0.2) 1px, transparent 1px);
+      background-size: 20px 20px;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -33,6 +37,23 @@
       padding: 15px;
       width: 30%;
       text-align: center;
+    }
+
+    .summary div h3::before {
+      display: inline-block;
+      margin-right: 5px;
+    }
+
+    .summary div:nth-child(1) h3::before {
+      content: "💰";
+    }
+
+    .summary div:nth-child(2) h3::before {
+      content: "💸";
+    }
+
+    .summary div:nth-child(3) h3::before {
+      content: "🏦";
     }
 
     .tracker-form {
@@ -83,9 +104,88 @@
 
     li.income { border-color: green; }
     li.expense { border-color: red; }
+
+    .login-toggle-button {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      padding: 10px 20px;
+      background-color: #1e88e5;
+      color: white;
+      font-weight: bold;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      z-index: 999;
+    }
+
+    .login-toggle-button:hover {
+      background-color: #1565c0;
+    }
+
+    .login-container {
+      position: absolute;
+      top: 70px;
+      right: 20px;
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      width: 300px;
+      text-align: center;
+      display: none;
+      z-index: 998;
+    }
+
+    .login-container h2 {
+      margin-bottom: 20px;
+    }
+
+    .credentials {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .credentials input {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    .credentials button {
+      width: 48%;
+      padding: 10px;
+      margin: 5px 1%;
+      border: none;
+      border-radius: 5px;
+      background-color: #43a047;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .credentials button:hover {
+      background-color: #388e3c;
+    }
   </style>
 </head>
 <body>
+  <button class="login-toggle-button" onclick="toggleLogin()">Login / Sign Up</button>
+  <div class="login-container" id="loginContainer">
+    <h2>Welcome</h2>
+    <div class="credentials">
+      <input type="text" id="username" placeholder="Username">
+      <input type="password" id="password" placeholder="Password">
+      <div style="display: flex; justify-content: space-between;">
+        <button onclick="signup()">Sign Up</button>
+        <button onclick="login()">Sign In</button>
+      </div>
+    </div>
+  </div>
+
   <h1>Expense Tracker</h1>
   <div class="summary">
     <div>
@@ -101,7 +201,6 @@
       <p id="savings">₹0</p>
     </div>
   </div>
-
   <div class="tracker-form">
     <input type="text" id="desc" placeholder="Description">
     <input type="number" id="amount" placeholder="Amount">
@@ -111,40 +210,67 @@
     </select>
     <button onclick="addTransaction()">Add</button>
   </div>
-
   <ul id="list"></ul>
-
   <script>
     let incomeTotal = 0;
     let expenseTotal = 0;
+
+    function toggleLogin() {
+      const container = document.getElementById("loginContainer");
+      container.style.display = container.style.display === "none" || container.style.display === "" ? "block" : "none";
+    }
+
+    const users = JSON.parse(localStorage.getItem("users")) || {};
+
+    function signup() {
+      const username = document.getElementById("username").value;
+      const password = document.getElementById("password").value;
+      if (!username || !password) {
+        alert("Please enter both username and password.");
+        return;
+      }
+      if (users[username]) {
+        alert("Username already exists.");
+        return;
+      }
+      users[username] = password;
+      localStorage.setItem("users", JSON.stringify(users));
+      alert("Signup successful.");
+    }
+
+    function login() {
+      const username = document.getElementById("username").value;
+      const password = document.getElementById("password").value;
+      if (users[username] && users[username] === password) {
+        localStorage.setItem("currentUser", username);
+        alert("Login successful!");
+        toggleLogin();
+      } else {
+        alert("Invalid username or password.");
+      }
+    }
 
     function addTransaction() {
       const desc = document.getElementById("desc").value;
       const amount = parseFloat(document.getElementById("amount").value);
       const type = document.getElementById("type").value;
       const list = document.getElementById("list");
-
       if (!desc || isNaN(amount)) {
         alert("Please enter valid description and amount.");
         return;
       }
-
       const li = document.createElement("li");
       li.classList.add(type);
       li.innerHTML = `${desc} <strong>₹${amount}</strong>`;
-
       list.appendChild(li);
-
       if (type === "income") {
         incomeTotal += amount;
       } else {
         expenseTotal += amount;
       }
-
       document.getElementById("income").innerText = `₹${incomeTotal}`;
       document.getElementById("expenses").innerText = `₹${expenseTotal}`;
       document.getElementById("savings").innerText = `₹${incomeTotal - expenseTotal}`;
-
       document.getElementById("desc").value = "";
       document.getElementById("amount").value = "";
       document.getElementById("type").value = "income";

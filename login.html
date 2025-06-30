@@ -1,93 +1,138 @@
-<!-- File: login.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Login - Expense Tracker</title>
+  <title>Login / Sign Up</title>
   <style>
     body {
-      background-color: #e0f2f1;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
+      background-color: #f0f8f5;
       margin: 0;
+      font-family: Arial, sans-serif;
+      height: 100vh;
+      overflow: hidden;
     }
 
-    .login-container {
-      background: white;
-      padding: 30px;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0, 128, 0, 0.2);
-      max-width: 400px;
-      width: 100%;
-    }
-
-    .login-container h2 {
-      text-align: center;
-      margin-bottom: 20px;
-      color: #2e7d32;
-    }
-
-    .login-container input {
-      width: 100%;
-      padding: 10px;
-      margin: 10px 0;
-      border-radius: 6px;
-      border: 1px solid #ccc;
-    }
-
-    .login-container button {
-      width: 48%;
-      padding: 10px;
-      margin: 5px 1%;
-      background: #43a047;
+    .login-toggle-button {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      padding: 10px 20px;
+      background-color: #1e88e5;
       color: white;
       font-weight: bold;
       border: none;
       border-radius: 6px;
       cursor: pointer;
+      z-index: 999;
     }
 
-    .login-container button:hover {
-      background: #2e7d32;
+    .login-toggle-button:hover {
+      background-color: #1565c0;
     }
 
-    .button-group {
+    .login-container {
+      position: absolute;
+      top: 70px;
+      right: 20px;
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      width: 300px;
+      text-align: center;
+      display: none;
+      z-index: 998;
+    }
+
+    .login-container h2 {
+      margin-bottom: 20px;
+    }
+
+    .credentials {
       display: flex;
-      justify-content: space-between;
-      margin-top: 10px;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .credentials input {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    .credentials button {
+      width: 48%;
+      padding: 10px;
+      margin: 5px 1%;
+      border: none;
+      border-radius: 5px;
+      background-color: #43a047;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .credentials button:hover {
+      background-color: #388e3c;
     }
   </style>
 </head>
 <body>
-  <div class="login-container">
-    <h2>Login</h2>
-    <input type="text" id="username" placeholder="Username" required />
-    <input type="password" id="password" placeholder="Password" required />
-    <div class="button-group">
-      <button onclick="login()">Sign In</button>
-      <button onclick="signup()">Sign Up</button>
+
+  <button class="login-toggle-button" onclick="toggleLogin()">Login / Sign Up</button>
+
+  <div class="login-container" id="loginContainer">
+    <h2>Welcome</h2>
+    <div class="credentials" id="credentials">
+      <input type="text" id="username" placeholder="Username" />
+      <input type="password" id="password" placeholder="Password" />
+      <div style="display: flex; justify-content: space-between;">
+        <button onclick="signup()">Sign Up</button>
+        <button onclick="login()">Sign In</button>
+      </div>
     </div>
   </div>
 
   <script>
+    const users = JSON.parse(localStorage.getItem("users")) || {};
+
+    function toggleLogin() {
+      const container = document.getElementById("loginContainer");
+      container.style.display = container.style.display === "none" || container.style.display === "" ? "block" : "none";
+    }
+
+    function signup() {
+      const username = document.getElementById("username").value;
+      const password = document.getElementById("password").value;
+
+      if (!username || !password) {
+        alert("Please enter both username and password.");
+        return;
+      }
+
+      if (users[username]) {
+        alert("Username already exists. Please choose another.");
+        return;
+      }
+
+      users[username] = password;
+      localStorage.setItem("users", JSON.stringify(users));
+      alert("Signup successful. You can now log in.");
+    }
+
     function login() {
       const username = document.getElementById("username").value;
       const password = document.getElementById("password").value;
 
-      if (username === "user" && password === "pass") {
+      if (users[username] && users[username] === password) {
+        localStorage.setItem("currentUser", username);
         window.location.href = "expense-tracker.html";
       } else {
-        alert("Invalid credentials. Try 'user' and 'pass'.");
+        alert("Invalid username or password.");
       }
-    }
-
-    function signup() {
-      alert("Redirecting to registration page (not implemented yet).");
-      // window.location.href = "signup.html"; // Uncomment when signup page is ready
     }
   </script>
 </body>
